@@ -2,7 +2,7 @@
 @section ('contenido')
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h3>Nuevo ingreso</h3>
+			<h3>Nuevo movimiento</h3>
 			@if (count($errors)>0)
 			<div class="alert alert-danger">
 				<ul>
@@ -20,12 +20,27 @@
 	<div class="row">
 		<div class="panel panel-primary">
 			<div class="panel-body">
+
+				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+					<div class="form-group">
+						<label>Tipo de Movimiento</label>
+						<select name="ptipo" id="ptipo" class="form-control selectpicker" data-live-search="true">
+							
+								<option value="Ingreso">Ingreso</option>
+								<option value="Egreso">Egreso</option>
+							
+						</select>
+					</div>
+				</div>
+
+
+
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
 						<label>Artefacto</label>
 						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
-							@foreach($artefactos as $artefacto)
-								<option value="{{$artefacto->ida}}">{{$artefacto->artefacto}}</option>
+							@foreach($artefactos as $art)
+								<option value="{{$art->id}}">{{$art->artefacto}}</option>
 							@endforeach	
 						</select>
 					</div>
@@ -64,6 +79,14 @@
 			</div>
 			
 		</div>
+
+		<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+					<div class="form-group">
+						<label for="cantidad">Observaciones</label>
+						<textarea id="observaciones" class="form-control " placeholder="observaciones"></textarea> 
+					</div>
+				</div>
+
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
 			<div class="form-group">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -100,44 +123,34 @@
 		var cont=0;
 		var total = 0;
 		subtotal=[];
-		$('#guardar').hide();
 
 		function agregar(){
 			idartefacto = $('#pidartefacto').val();
+
 			artefacto = $('#pidartefacto option:selected').text();
+			
 			cantidad = $('#pcantidad').val();
 			if(idartefacto !="" && cantidad !=""){
 				var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+')" >X</button></td><td><input type="hidden" name="idartefacto[]" value="'+idartefacto+'">'+artefacto+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'"></td></tr>';
 				cont++;
 				limpiar();
-				$('#total').html("$ " + parseFloat(total));
-				evaluar();
+				
 				$('#detalles').append(fila);
 			}else{
-				alert("Error al ingresar el detalle del ingreso, revise los datos del artefacto");
+				alert("Error al ingresar el detalle del movimiento, revise los datos del artefacto");
 			}
 
 
 		}
 		function limpiar(){
+			$('#pidartefacto').val("");
 			$('#pcantidad').val("");
-			$('#pprecio_compra').val("");
-			$('#pprecio_venta').val("");
+			
 		}
 
-		function evaluar(){
-			if (total>0) {
-				$('#guardar').show();
-			}
-			else{
-				$('#guardar').hide();
-			}
-		}
 		function eliminar(index){
-			total=total-subtotal[index];
-			$("#total").html("$ " + total);
 			$("#fila" + index).remove();
-			evaluar();
+			
 		}
 	</script>
 	@endpush

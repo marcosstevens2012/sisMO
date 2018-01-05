@@ -18,28 +18,30 @@ use Illuminate\Support\Collection;
 class MovimientoController extends Controller
 {
     //constructor
+    public function __construct(){
+        
+
     }
     public function index(Request $request){
     	if($request){
     		$query=trim($request->get('searchText'));
     		$movimiento=DB::table('movimiento as mov')
-    		->join('artefacto as as art','mov.id','=','art.id')
-    		->join('detalle_movimiento as dm','mov.id','=','mov.idingreso')
-    		->select('mov.id','mov.fecha_hora','mov.nombre','mov.estado')
+    		->join('artefacto as art','mov.id','=','art.id')
+    		->join('detalle_movimiento as dm','mov.id','=','mov.id')
+    		->select('mov.id','mov.fecha_hora','mov.estado','art.nombre','mov.tipo','mov.observaciones')
     		->where('art.nombre','LIKE','%'.$query.'%')
     		->orderBy('mov.id','desc')
-    		->groupBy('mov.id','i.fecha_hora','art.nombre','i.estado')
+    		->groupBy('mov.id','mov.fecha_hora','art.nombre','mov.tipo','mov.estado','mov.observaciones')
     		->paginate(7);
-    		return view('movimiento.index',["moviemientos"=>$movimiento,"searchText"=>$query]);
+    		return view('movimiento.movimiento.index',["movimientos"=>$movimiento,"searchText"=>$query]);
     	}
     }
     public function create(){
-    	$persona=DB::table('persona')->where('tipo_persona','=','Proveedor')->get();
-    	$articulos=DB::table('articulo as art')
-    	->select(DB::raw('CONCAT(art.codigo, " ",art.nombre) AS articulo'),'art.idarticulo')
-    	->where('art.estado','=','Activo')
+    	$artefactos=DB::table('artefacto as art') 
+    	->select('art.nombre AS artefacto','art.id')
+    	->where('art.estado','=','Disponible')
     	->get();
-    	return view("moviemiento.movimiento.create",["personas"=>$persona,"articulos"=>$articulos]);
+    	return view("movimiento.movimiento.create",["artefactos"=>$artefactos]);
     }
     public function store(IngresoFormRequest $request){
         try {
