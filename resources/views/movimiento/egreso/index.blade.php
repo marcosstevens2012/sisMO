@@ -2,8 +2,8 @@
 @section ('contenido')
 	<div class="row">
 		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-			<h3>LISTADO DE MOVIMIENTOS <a href="movimiento/create"><button class="btn btn-success">Nuevo</button></a></h3>
-			@include('movimiento.movimiento.search')
+			<h3>LISTADO DE egresoS <a href="egreso/create"><button class="btn btn-success">Nuevo</button></a></h3>
+			@include('movimiento.egreso.search')
 		</div>
 	</div>
 	<div class="row">
@@ -19,24 +19,24 @@
 
 					</thead>
 					<!-- bucle -->
-					@foreach ($movimientos as $mov)
+					@foreach ($egresos as $mov)
 					<tr>
 						<td>{{$mov->fecha_hora}}</td>
 						<td>{{$mov->tipo}}</td>
 						<td>{{$mov->estado}}</td>
 						<td>{{$mov->observaciones}}</td>
 						<td>
-							<a href="{{URL::action('MovimientoController@show', $mov->id)}}"><button class="btn btn-info"> Detalles</button></a>
+							<a href="{{URL::action('egresoController@show', $mov->id)}}"><button class="btn btn-info"> Detalles</button></a>
 							<a href="" data-target="#modal-delete-{{$mov->id}}" data-toggle="modal"><button class="btn btn-danger"> Anular</button></a>
 						</td>
 					</tr>
-					@include('movimiento.movimiento.modal')
+					@include('movimiento.egreso.modal')
 					@endforeach
 					
 				</table>
 				
 			</div>
-			{{$movimientos->render()}}
+			{{$egresos->render()}}
 			
 		</div>
 	</div>

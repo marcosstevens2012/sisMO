@@ -25,8 +25,8 @@ class InventarioFormRequest extends Request
     {
         return [
             'nombre'=>'required|max:50',
-            'stock'=>'required',
             'descripcion'=>'required',
+            'categoria'=>'required',
             
         ];
     }

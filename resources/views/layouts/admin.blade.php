@@ -143,6 +143,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="{{url('artefacto/artefacto')}}"><i class="fa fa-circle-o"></i> Artefactos</a></li>
+                <li><a href="{{url('artefacto/categoria')}}"><i class="fa fa-circle-o"></i> Categoria</a></li>
               </ul>
             </li>
             <li class="treeview">

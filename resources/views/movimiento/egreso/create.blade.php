@@ -2,7 +2,7 @@
 @section ('contenido')
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h3>Nuevo movimiento</h3>
+			<h3>Nuevo egreso</h3>
 			@if (count($errors)>0)
 			<div class="alert alert-danger">
 				<ul>
@@ -14,7 +14,7 @@
 			@endif
 		</div>
 	</div>
-	{!! Form::open(array('url'=>'movimiento/movimiento', 'method'=>'POST', 'autocomplete'=>'off'))!!}
+	{!! Form::open(array('url'=>'movimiento/egreso', 'method'=>'POST', 'autocomplete'=>'off'))!!}
 	{{Form::token()}}
 
 	<div class="row">
@@ -23,26 +23,20 @@
 
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
-						<label>Tipo de Movimiento</label>
-						<select name="ptipo" id="ptipo" class="form-control selectpicker" data-live-search="true">
-							
-								<option value="Ingreso">Ingreso</option>
-								<option value="Egreso">Egreso</option>
-							
+						<label>Artefacto</label>
+						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
+							<option>Seleccione</option>
+							@foreach($artefactos as $art)
+								<option value="{{$art->id}}_{{$art->categoria}}_{{$art->ncategoria}}_{{$art->estadof}}">{{$art->artefacto}}</option>
+							@endforeach	
 						</select>
 					</div>
 				</div>
 
-
-
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
-						<label>Artefacto</label>
-						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
-							@foreach($artefactos as $art)
-								<option value="{{$art->id}}">{{$art->artefacto}}</option>
-							@endforeach	
-						</select>
+						<label>Estado salida</label>
+						<input type="number" name="estados" id="estados" class="form-control " placeholder="cantidad">
 					</div>
 				</div>
 
@@ -83,10 +77,16 @@
 		<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
 					<div class="form-group">
 						<label for="cantidad">Observaciones</label>
-						<textarea id="observaciones" class="form-control " placeholder="observaciones"></textarea> 
+						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones"></textarea> 
 					</div>
 				</div>
 
+
+					<div class="form-group">
+						<input type="number" name="idcategoria" id="idcategoria" class hidden="form-control " placeholder="categoria">
+					</div>
+					<input type="num" name="idartefacto" id="idartefacto" style="visibility: hidden;" readonly class="form-control" placeholder="Consultorio">
+			
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
 			<div class="form-group">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -105,21 +105,27 @@
     <script type="text/javascript" src="{{asset('js/jquery.mask.min.js')}}"></script>
 	
 
-	<script type="text/javascript">
-		$(document).ready(function($){
-			$('#pprecio_compra').mask("#.##0,00", {reverse: true});
-			$('#pprecio_venta').mask("#.##0,00", {reverse: true});
-		})
+
+	@push ('scripts') 
+	<script>
+	$('#pidartefacto').change(mostrarValores);
+		
+		function mostrarValores(){
+			datosArtefacto = document.getElementById('pidartefacto').value.split('_');
+			$('#idcategoria').val(datosArtefacto[1]);
+			$('#idartefacto').val(datosArtefacto[0]);
+
+		}
 	</script>
 
-
-	@push ('scripts') <!-- Trabajar con el script definido en el layout-->
+			<!-- Trabajar con el script definido en el layout-->
 	<script>
 		$(document).ready(function(){
 			$('#bt_add').click(function(){
 				agregar();
 			});
 		});
+
 		var cont=0;
 		var total = 0;
 		subtotal=[];

@@ -2,9 +2,9 @@
 
 namespace mol\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use mol\Http\Requests\Request;
 
-class EgresoFormRequest extends FormRequest
+class CategoriaFormRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class EgresoFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nombre'=>'required|max:50',
+            'descripcion'=>'required',
+            
         ];
     }
 }

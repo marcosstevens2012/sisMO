@@ -2,9 +2,9 @@
 
 namespace mol\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use mol\Http\Requests\Request;
 
-class IngresoFormRequest extends FormRequest
+class IngresoFormRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class IngresoFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class IngresoFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            
+            
         ];
     }
 }

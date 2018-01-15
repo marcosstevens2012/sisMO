@@ -24,16 +24,35 @@
 			</div>
 		</div>
 
-		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-			<div class="form-group">
-				<label for="stock">Stock</label>
-				<input type="number" name="stock" required value="{{old('stock')}}" class="form-control" placeholder="Stock">
-			</div>	
+		<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+					<div class="form-group">
+						<label>Categoria</label>
+						<select name="categoria" id="categoria" class="form-control selectpicker" data-live-search="true">
+							@foreach($categorias as $cat)
+								<option value="{{$cat->idcategoria}}">{{$cat->nombre}}</option>
+							@endforeach	
+						</select>
+					</div>
+		</div>
+
+		<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+				<div class="form-group">
+					<label>Estado Fisico</label>
+						<select name="estadof" id="estadof" class="form-control selectpicker" data-live-search="true">
+							
+						<option value="MUY BUENO">MUY BUENO</option>
+						<option value="BUENO">BUENO</option>
+						<option value="REGULAR">REGULAR</option>
+						<option value="MALO">MALO</option>
+						<option value="MUY MALO">MUY MALO</option>
+							
+						</select>
+				</div>
 		</div>
 
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 			<div class="form-group">
-				<label for="descripcion">Descripcion</label>
+				<label for="descripcion">Detalles</label>
 				<input type="text" name="descripcion" style="text-transform:uppercase;" onkeyup="aMays(event, this)" onblur="aMays(event, this)" required value="{{old('descripcion')}}" class="form-control" placeholder="Descripcion">
 			</div>
 			

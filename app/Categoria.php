@@ -4,17 +4,16 @@ namespace mol;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Inventario extends Model
+class Categoria extends Model
 {
     //declaración de los atributos de la tabla
-    protected $table = 'movimiento';
-    protected $primaryKey = 'id';
+    protected $table = 'categoria';
+    protected $primaryKey = 'idcategoria';
     public $timestamp = false;
     protected $fillable = [
-    	'usuario',
-    	'fecha_hora',
-    	'tipo',
-    	'observaciones'
+    	'nombre',
+    	'stock',
+    	'descripcion'
     ];
     protected $guarded = [ ];
 }

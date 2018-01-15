@@ -15,7 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('artefacto/artefacto', 'InventarioController');
-Route::resource('movimiento/movimiento', 'MovimientoController');
+Route::resource('movimiento/ingreso', 'IngresoController');
+Route::resource('movimiento/egreso', 'EgresoController');
+Route::resource('artefacto/categoria', 'CategoriaController');
 
 
 Route::get('error', function(){ 

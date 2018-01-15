@@ -23,7 +23,7 @@ class InventarioController extends Controller
     		$query=trim($request->get('searchText'));
     		$artefactos=DB::table('artefacto as a')
     		//de la union eligo los campos que requiero
-    		->select('a.id', 'a.nombre', 'a.stock', 'a.descripcion', 'a.estado')
+    		->select('a.id', 'a.nombre', 'a.descripcion', 'a.estado', 'a.estadof')
     		->where('a.nombre','LIKE','%'.$query.'%')
             //otro campo
             //->orwhere('a.nombre','LIKE','%'.$query.'%')
@@ -34,16 +34,19 @@ class InventarioController extends Controller
     	}
     }
     public function create()
-    {
-        return view("artefacto.artefacto.create");
+    {   
+
+        $categorias = DB::table('categoria')->get();
+        return view("artefacto.artefacto.create",["categorias"=>$categorias]);
     }
     public function store (InventarioFormRequest $request)
     {
         $artefacto = new Inventario;
         $artefacto->nombre=$request->get('nombre');
-        $artefacto->stock=$request->get('stock');
         $artefacto->descripcion=$request->get('descripcion');
-        $artefacto->estado='Activo';
+        $artefacto->categoria=$request->get('categoria');
+        $artefacto->estadof=$request->get('estadof');
+        $artefacto->estado='Disponible';
         $artefacto->save();
         return Redirect::to('artefacto/artefacto'); //redirecciona a la vista categoria
 
@@ -77,7 +80,7 @@ class InventarioController extends Controller
         $artefacto->estado='Inactivo';
         $artefacto->update();
         DB::commit();
-        $r = 'artefacto Eliminado';
+        $r = 'Artefacto Eliminado';
         }
 
         catch (\Exception $e) {

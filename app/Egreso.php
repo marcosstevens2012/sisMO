@@ -4,17 +4,15 @@ namespace mol;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Inventario extends Model
+class Engreso extends Model
 {
     //declaración de los atributos de la tabla
-    protected $table = 'artefacto';
+    protected $table = 'egreso';
     protected $primaryKey = 'id';
     public $timestamp = false;
     protected $fillable = [
-    	'nombre',
-    	'estado',
-        'categoria',
-    	'descripcion'
+    	'usuario',
+    	'observaciones'
     ];
     protected $guarded = [ ];
 }
