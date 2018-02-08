@@ -4,7 +4,7 @@ namespace mol;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Engreso extends Model
+class Egreso extends Model
 {
     //declaración de los atributos de la tabla
     protected $table = 'egreso';

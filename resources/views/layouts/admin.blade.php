@@ -153,8 +153,8 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{{url('movimiento/ingreso')}}"><i class="fa fa-circle-o"></i>Ingreso</a></li>
-                <li><a href="{{url('movimiento/egreso')}}"><i class="fa fa-circle-o"></i>Egreso</a></li>
+                <li><a href="{{url('movimiento/ingreso')}}"><i class="fa fa-circle-o"></i>Entrada</a></li>
+                <li><a href="{{url('movimiento/egreso')}}"><i class="fa fa-circle-o"></i>Salidas</a></li>
               </ul>
             </li>
             <li class="treeview">

@@ -2,7 +2,7 @@
 @section ('contenido')
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h3>Nuevo ingreso</h3>
+			<h3>Nueva Entrada</h3>
 			@if (count($errors)>0)
 			<div class="alert alert-danger">
 				<ul>
@@ -23,39 +23,46 @@
 
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
-						<label>Artefacto</label>
-						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
+						<label>Usuario</label>
+						<select name="usuario" id="usuario" class="usuario form-control selectpicker" data-live-search="true">
 							<option>Seleccione</option>
-							@foreach($artefactos as $art)
-								<option value="{{$art->id}}_{{$art->categoria}}_{{$art->ncategoria}}">{{$art->artefacto}}</option>
+							@foreach($user as $use)
+								<option value="{{$use->id}}">{{$use->name}}</option>
 							@endforeach	
 						</select>
 					</div>
 				</div>
 
 
-
-
+				
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
-						<label>Estado entrada</label>
-						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
-							
-								<option value="BUENO">BUENO</option>
+						<label for="fecha">Artefacto</label>
+						<select name="artefacto" id="artefacto" class="artefacto form-control" >
 							
 						</select>
 					</div>
 				</div>
 
-				
-				
-				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
-						<label for="cantidad">Cantidad</label>
-						<input type="number" name="pcantidad" id="pcantidad" class="form-control " placeholder="cantidad">
+						<label>Estado entrada</label>
+						<select name="estado" id="estado" class="estado form-control selectpicker" data-live-search="true">
+							@foreach($estado as $est)
+								<option value="{{$est->id}}">{{$est->nombre}}</option>
+							@endforeach	
+						</select>
 					</div>
 				</div>
 
+				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+					<div class="form-group">
+						<label for="cantidad">Observaciones</label>
+						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones"></textarea> 
+					</div>
+				</div>
+
+			
 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
 					<div class="form-group">
 						<button type="button" id="bt_add" class="btn btn-primary">Agregar</button>
@@ -67,9 +74,11 @@
 						<thead style="background-color: #ccc">
 							<th>Opciones</th>
 							<th>Artefacto</th>
-							<th>Cantidad</th>
+							<th>Estado</th>
+							<th>Observaciones</th>
 						</thead>
 						<tfoot>
+							<th></th>
 							<th></th>
 							<th></th>
 							<th></th>
@@ -79,22 +88,20 @@
 						</tbody>
 					</table>
 				</div>
+
+			
 			</div>
 			
+			
+
 		</div>
 
-		<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-					<div class="form-group">
-						<label for="cantidad">Observaciones</label>
-						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones"></textarea> 
-					</div>
-				</div>
+		
 
-
-					<div class="form-group">
-						<input type="number" name="idcategoria" id="idcategoria" class hidden="form-control " placeholder="categoria">
-					</div>
-					<input type="num" name="idartefacto" id="idartefacto" style="visibility: hidden;" readonly class="form-control" placeholder="Consultorio">
+					
+		<input type="number" name="idcategoria" id="idcategoria" class hidden="form-control " placeholder="categoria">
+					
+		<input type="num" name="idartefacto" id="idartefacto" style="visibility: hidden;" readonly class="form-control" placeholder="Consultorio">
 			
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
 			<div class="form-group">
@@ -136,17 +143,16 @@
 		});
 
 		var cont=0;
-		var total = 0;
-		subtotal=[];
-
+		
 		function agregar(){
-			idartefacto = $('#pidartefacto').val();
+			idartefacto = $('#artefacto').val();
+			artefacto = $('#artefacto option:selected').text();
+			idestado = $('#estado').val();
+			estado = $('#estado option:selected').text();
+			obs = $('#observaciones').val();
 
-			artefacto = $('#pidartefacto option:selected').text();
-			
-			cantidad = $('#pcantidad').val();
-			if(idartefacto !="" && cantidad !=""){
-				var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+')" >X</button></td><td><input type="hidden" name="idartefacto[]" value="'+idartefacto+'">'+artefacto+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'"></td></tr>';
+			if(idartefacto !=""){
+				var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+')" >X</button></td><td><input type="hidden" name="idartefacto[]" value="'+idartefacto+'">'+artefacto+'</td><td><input type="hidden" name="estado[]" value="'+idestado+'">'+estado+'</td><td><textarea type="hidden" name="pobservaciones[]" value="'+obs+'">'+obs+'</textarea></tr>';
 				cont++;
 				limpiar();
 				
@@ -159,7 +165,6 @@
 		}
 		function limpiar(){
 			$('#pidartefacto').val("");
-			$('#pcantidad').val("");
 			
 		}
 
@@ -168,6 +173,56 @@
 			
 		}
 	</script>
+
+	<script type="text/javascript">
+    $(document).ready(function(){
+
+        $(document).on('change','.usuario',function(e){
+        	e.stopPropagation();
+            //console.log("hmm its change");
+
+            var iduser=$(this).val();
+            console.log(iduser);
+            
+            var div=$(this).parent();
+
+            var op=" ";
+            
+            $.ajax({
+                type:'get',
+                url:'{!!URL::to('buscarEgreso')!!}',
+                data:{'id':iduser},
+                headers:{'X-CSFR-TOKEN':$('meta[name="csrf-token"]').attr('content')},
+                success:function(data){
+               
+
+                    $.each(data, function(key, value) {   
+					     $('#artefacto')
+					         .append($("<option></option>")
+					                    .attr("value", key)
+					                    .text(value.nombre)); 
+					});
+
+               //     op+='<option value="0" selected disabled>Seleccione Artefacto</option>';
+               //     for(var i=0;i<data.length;i++){
+                        
+               ////         op+='<option value="'+data[i].id+'">'+data[i].id+'</option>';
+
+               //    	}
+
+                //   div.find('.artefacto').html(" ");
+                //   div.find('.artefacto').append(op);
+                  
+                },
+                error:function(){
+
+                }
+            });
+
+        });
+
+    });
+</script>
 	@endpush
 
 @endsection

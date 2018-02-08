@@ -29,10 +29,10 @@ class EgresoController extends Controller
             $egreso=DB::table('egreso as mov')
             ->join('detalle_egreso as dm','mov.id','=','dm.egreso_id')
             ->join('artefacto as art','dm.artefacto_id','=','art.id')
-            ->select('mov.id','mov.estado','art.nombre','mov.observaciones')
+            ->select('mov.id','mov.estado','art.nombre','mov.observaciones','art.estadof','mov.created_at')
             ->where('art.nombre','LIKE','%'.$query.'%')
             ->orderBy('mov.id','desc')
-            ->groupBy('mov.id','art.nombre','mov.estado','mov.observaciones')
+            ->groupBy('mov.id','art.nombre','mov.estado','mov.observaciones','art.estadof','mov.created_at')
             ->paginate(7);
             return view('movimiento.egreso.index',["egresos"=>$egreso,"searchText"=>$query]);
         }
@@ -40,40 +40,44 @@ class EgresoController extends Controller
     public function create(){
         $artefactos=DB::table('artefacto as art')
         ->join('categoria as cat','cat.idcategoria','=','art.categoria') 
-        ->select('art.nombre AS artefacto','art.id','cat.idcategoria as categoria','cat.nombre as ncategoria')
+        ->select('art.nombre AS artefacto','art.id','cat.idcategoria as categoria','cat.nombre as ncategoria','art.estadof')
         ->where('art.estado','=','Disponible')
         ->get();
 
+        $user=DB::table('users')->get();
+
         //dd($artefactos);
-        return view("movimiento.egreso.create",["artefactos"=>$artefactos]);
+        return view("movimiento.egreso.create",["artefactos"=>$artefactos,"user"=>$user]);
     }
     public function store(egresoFormRequest $request){
-       
+
             $egreso = new egreso;
-            $mytime = Carbon::now();
-            $egreso->fecha_hora = $mytime->toDateTimeString();
             $egreso->observaciones=$request->get('observaciones');
+            $egreso->usuario=$request->get('usuario');
             $egreso->estado='Activo';
             $egreso->save();
 
+            $idartefactos=$request->get('idartefacto');
+            
+            $idcategoria = $request->get('categoria');
 
-            
-            $idartefacto=$request->get('idartefacto');
-            $cantidad = $request->get('cantidad');
-            $idcategoria = $request->get('idcategoria');
-            
-            
+        
             //recorre los articulos agregados
+            /*foreach ($idartefactos as $id) {
+                $artefacto = Artefacto::findOrFail($id);
+                $artefacto->disponible = false;
+                $artefacto->save();
+                dd($artefacto);
+            }*/
+
             $cont = 0;
-
             
-
-            while ($cont < count($idartefacto)) {
+            while ($cont < count($idartefactos)) {
                 # code...
-                $detalle = new Detalleegreso();
+                $detalle = new DetalleEgreso();
                 $detalle->egreso_id=$egreso->id;
-                $detalle->artefacto_id=$idartefacto[$cont];
-                $detalle->cantidad=$cantidad[$cont];
+                $detalle->artefacto_id=$idartefactos[$cont];
+                
                 $detalle->idcategoria=$idcategoria[$cont];
                 $detalle->save();
                 $cont=$cont+1;

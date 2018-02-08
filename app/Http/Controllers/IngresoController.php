@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use mol\Http\Requests\ingresoFormRequest;
 use mol\Ingreso;
+use mol\Egreso;
 use mol\Inventario;
 use mol\DetalleIngreso;
 
@@ -44,8 +45,28 @@ class IngresoController extends Controller
     	->where('art.estado','=','Disponible')
     	->get();
 
+        
+
+        $user=DB::table('users')->get();
+        $estado=DB::table('estado')->get();
+        
+
         //dd($artefactos);
-    	return view("movimiento.ingreso.create",["artefactos"=>$artefactos]);
+    	return view("movimiento.ingreso.create",["artefactos"=>$artefactos,"user"=>$user,"estado"=>$estado]);
+    }
+
+    public function buscarEgreso(Request $request){
+
+        $data=Egreso::select('id')->where('usuario',$request->id)->take(100)->get();
+
+        $data=DB::table('egreso as egr')
+        ->join('detalle_egreso as de','de.egreso_id','=','egr.id')
+        ->join('artefacto as art','art.id','=','de.artefacto_id')
+        ->join('users as u','u.id','=','egr.usuario')
+        ->select('u.*','art.*','de.*')
+        ->get();
+
+        return response()->json($data);//then sent this data to ajax success
     }
     public function store(IngresoFormRequest $request){
        
@@ -56,13 +77,10 @@ class IngresoController extends Controller
             $ingreso->estado='Activo';
             $ingreso->save();
 
-
-            
             $idartefacto=$request->get('idartefacto');
-            $cantidad = $request->get('cantidad');
+           
             $idcategoria = $request->get('idcategoria');
-            
-            
+        
             //recorre los articulos agregados
             $cont = 0;
 
@@ -73,7 +91,7 @@ class IngresoController extends Controller
                 $detalle = new DetalleIngreso();
                 $detalle->ingreso_id=$ingreso->id;
                 $detalle->artefacto_id=$idartefacto[$cont];
-                $detalle->cantidad=$cantidad[$cont];
+                
                 $detalle->idcategoria=$idcategoria[$cont];
                 $detalle->save();
                 $cont=$cont+1;

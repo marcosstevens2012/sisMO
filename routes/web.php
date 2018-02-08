@@ -17,7 +17,9 @@ Route::get('/', function () {
 Route::resource('artefacto/artefacto', 'InventarioController');
 Route::resource('movimiento/ingreso', 'IngresoController');
 Route::resource('movimiento/egreso', 'EgresoController');
+Route::get('/buscarEgreso','IngresoController@buscarEgreso');
 Route::resource('artefacto/categoria', 'CategoriaController');
+Route::resource('seguridad/usuario', 'UsuarioController');
 
 
 Route::get('error', function(){ 

@@ -11,7 +11,7 @@ class Ingreso extends Model
     protected $primaryKey = 'id';
     public $timestamp = false;
     protected $fillable = [
-    	'usuario',
+    	'usuario_id',
     	'fecha_hora',
     	'tipo',
     	'observaciones'
