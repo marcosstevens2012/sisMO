@@ -10,6 +10,7 @@ use mol\Http\Requests\ingresoFormRequest;
 use mol\Ingreso;
 use mol\Egreso;
 use mol\Inventario;
+use mol\Categoria;
 use mol\DetalleIngreso;
 
 use DB;
@@ -40,12 +41,10 @@ class IngresoController extends Controller
     }
     public function create(){
     	$artefactos=DB::table('artefacto as art')
-        ->join('categoria as cat','cat.idcategoria','=','art.categoria') 
-    	->select('art.nombre AS artefacto','art.id','cat.idcategoria as categoria','cat.nombre as ncategoria')
-    	->where('art.estado','=','Disponible')
+        ->join('categoria as cat','cat.idcategoria','=','art.categoria')
+        ->join('estado as est','est.id','=','art.estadof') 
+    	->select('art.nombre AS artefacto','est.nombre as estadof','est.id','art.id','cat.idcategoria as categoria','cat.nombre as ncategoria','art.id')
     	->get();
-
-        
 
         $user=DB::table('users')->get();
         $estado=DB::table('estado')->get();
@@ -57,13 +56,16 @@ class IngresoController extends Controller
 
     public function buscarEgreso(Request $request){
 
-        $data=Egreso::select('id')->where('usuario',$request->id)->take(100)->get();
+        //$data=Egreso::select('id')->where('usuario',$request->id)->take(100)->get();
 
         $data=DB::table('egreso as egr')
         ->join('detalle_egreso as de','de.egreso_id','=','egr.id')
         ->join('artefacto as art','art.id','=','de.artefacto_id')
         ->join('users as u','u.id','=','egr.usuario')
-        ->select('u.*','art.*','de.*')
+        ->join('estado as est','est.id','=','art.estadof')
+        ->where('usuario',$request->id)
+        ->where('art.disponible','=',false)
+        ->select('art.*','est.nombre as estad')
         ->get();
 
         return response()->json($data);//then sent this data to ajax success
@@ -77,22 +79,34 @@ class IngresoController extends Controller
             $ingreso->estado='Activo';
             $ingreso->save();
 
-            $idartefacto=$request->get('idartefacto');
-           
+            $idartefacto = $request->get('idartefacto');
+            $estado= $request->get('estado');
             $idcategoria = $request->get('idcategoria');
-        
-            //recorre los articulos agregados
+            $observaciones = $request->get('observaciones');
+            //dd($idartefacto);
             $cont = 0;
+            foreach ($idartefacto as $id) {
 
-            
+                $artefacto = Inventario::findOrFail($id);
+                $categoria = Categoria::findOrFail($idcategoria);
+                $categoria->stock = $categoria->stock + 1;
+                $artefacto->disponible = true;
+                $artefacto->estadof = $estado[$cont];
+                $artefacto->save();
+                $cont=$cont+1;
+                //dd($artefacto);
+                
+            }
 
+
+            $cont = 0;
             while ($cont < count($idartefacto)) {
                 # code...
                 $detalle = new DetalleIngreso();
                 $detalle->ingreso_id=$ingreso->id;
                 $detalle->artefacto_id=$idartefacto[$cont];
-                
                 $detalle->idcategoria=$idcategoria[$cont];
+                $detalle->observaciones=$observaciones[$cont];
                 $detalle->save();
                 $cont=$cont+1;
             }
@@ -101,16 +115,16 @@ class IngresoController extends Controller
         return Redirect::to('movimiento/ingreso');
     }
     public function show($id){
-        $ingreso=DB::table('ingreso as i')
-            ->join('detalle_ingreso as di','i.id','=','di.idingreso')
-            ->select('i.idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.estado',DB::raw('sum(di.cantidad*precio_compra) as total'))
-            ->where('i.idingreso','=',$id)
-             ->groupBy('i.idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante', 'i.num_comprobante','i.impuesto','i.estado')
+            $ingreso=DB::table('ingreso as i')
+            ->join('detalle_ingreso as di','i.id','=','di.ingreso_id')
+            ->select('i.*','di.*')
+            ->where('i.id','=',$id)
+            //->groupBy('i.id','i.fecha_hora')
             ->first();
             $detalles=DB::table('detalle_ingreso as d')
-            ->join('articulo as a', 'd.idarticulo','=', 'a.idarticulo')
-            ->select('a.nombre as articulo','d.cantidad', 'd.precio_compra', 'd.precio_venta')
-            ->where('d.idingreso','=',$id)
+            ->join('artefacto as inv', 'd.artefacto_id','=', 'inv.id')
+            ->select('inv.nombre')
+            ->where('d.ingreso_id','=',$id)
 
             ->get();//obengo todos los detalles;
             return view("movimiento.ingreso.show",["ingreso"=>$ingreso,"detalles"=>$detalles]);

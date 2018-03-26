@@ -39,7 +39,7 @@
 						<select name="pidartefacto" id="pidartefacto" class="form-control selectpicker" data-live-search="true">
 							<option>Seleccione</option>
 							@foreach($artefactos as $art)
-								<option value="{{$art->id}}_{{$art->categoria}}_{{$art->ncategoria}}_{{$art->estadof}}">{{$art->artefacto}}</option>
+								<option value="{{$art->idartefacto}}_{{$art->categoria}}_{{$art->ncategoria}}_{{$art->estadof}}">{{$art->artefacto}}</option>
 							@endforeach	
 						</select>
 					</div>
@@ -51,10 +51,10 @@
 						<input type="text" name="estados" id="estados" class="form-control " placeholder="Estado Salida" readonly>
 					</div>
 				</div>
-				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+				<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
 					<div class="form-group">
 						<label for="cantidad">Observaciones</label>
-						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones"></textarea> 
+						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="Observaciones" style="resize: none"></textarea> 
 					</div>
 				</div>
 
@@ -146,6 +146,7 @@
 			idartefacto = $('#artefacto').val();
 			pidcategoria = $('#idcategoria').val();
 			artefacto = $('#pidartefacto option:selected').text();
+			console.log(idartefacto);
 			ncategoria = $('#categorianombre').val();
 			obs = $('#observaciones').val();
 			

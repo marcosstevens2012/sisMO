@@ -7,10 +7,10 @@
 		</div>
 	</div>
 	@if(Session::has('notice'))<!-- crea una alerta de q ha sido creado correctamente el usuario-->
-                
-   					<div class="alert alert-info">{{ Session::get('notice') }}</div>
-				
-        @endif
+   					<div class="alert alert-info">
+   					<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    				<strong>Notice:</strong> {{Session::get('notice') }}</div>
+    @endif
 
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -18,7 +18,7 @@
 				<table id="example1" class="table table-striped table-bordered table-condensed table-hover">
 					<thead>
 						<th>Nombre</th> 
-						<th>Estado</th>
+						<th>Disponibilidad</th>
 						<th>Estado Fisico</th>
 						<th>Opciones</th>
 						
@@ -27,8 +27,12 @@
 					@foreach ($artefactos as $ins)
 					<tr>
 						<td>{{$ins->nombre}}</td>
+						@if ($ins->disponible==1)
+						<td><small class="label pull-right bg-green">Disponible</small></td>
+						@elseif ($ins->disponible==0)
+						<td><small class="label pull-right bg-red">No disponible</small></td>
+						@endif
 						<td>{{$ins->estado}}</td>
-						<td>{{$ins->estadof}}</td>
 						<td>
 							<a href="{{URL::action('InventarioController@edit', $ins->id)}}"><button class="btn btn-info"> Editar</button></a>
 							<a href="" data-target="#modal-delete-{{$ins->id}}" data-toggle="modal"><button class="btn btn-danger"> Eliminar</button></a>

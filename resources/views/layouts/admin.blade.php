@@ -164,7 +164,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{{url('artefacto/artefacto')}}"><i class="fa fa-circle-o"></i>Lista de tareas</a></li>
+                <li><a href="{{url('lista/lista')}}"><i class="fa fa-circle-o"></i>Lista de tareas</a></li>
               </ul>
             </li>
             <li>
@@ -203,7 +203,7 @@
             <div class="col-md-12">
               <div class="box">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Sistema de Gestion Odontologica</h3>
+                  <h3 class="box-title">Interno MOL</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     

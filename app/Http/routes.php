@@ -18,9 +18,11 @@ Route::get('/', function () {
 
 Route::auth();
 Route::resource('articulo/articulo', 'InventarioController');
+Route::get('movimiento/ingreso', 'MovimientoController@index');
 Route::get('articulo/articulo', 'InventarioController@index');
 Route::resource('pdf','PdfController'); 
-
+Route::get('tarea/tarea', 'TareaController@index');
+Route::get('tarea/cargar', 'CargarlistaController@edit');
 Route::get('usuario/{id}','UsuarioController@update');
 
 Route::get('error', function(){ 

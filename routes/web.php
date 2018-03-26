@@ -20,6 +20,8 @@ Route::resource('movimiento/egreso', 'EgresoController');
 Route::get('/buscarEgreso','IngresoController@buscarEgreso');
 Route::resource('artefacto/categoria', 'CategoriaController');
 Route::resource('seguridad/usuario', 'UsuarioController');
+Route::resource('lista/lista', 'ListaController');
+
 
 
 Route::get('error', function(){ 

@@ -22,8 +22,9 @@ class InventarioController extends Controller
     	if($request){
     		$query=trim($request->get('searchText'));
     		$artefactos=DB::table('artefacto as a')
+            ->join('estado as est','est.id','=','a.estadof')
     		//de la union eligo los campos que requiero
-    		->select('a.id', 'a.nombre', 'a.descripcion', 'a.estado', 'a.estadof')
+    		->select('a.id', 'a.nombre', 'a.descripcion', 'a.disponible', 'est.nombre as estado')
     		->where('a.nombre','LIKE','%'.$query.'%')
             //otro campo
             //->orwhere('a.nombre','LIKE','%'.$query.'%')
@@ -37,18 +38,33 @@ class InventarioController extends Controller
     {   
 
         $categorias = DB::table('categoria')->get();
-        return view("artefacto.artefacto.create",["categorias"=>$categorias]);
+        $estados = DB::table('estado')->get();
+
+        return view("artefacto.artefacto.create",["categorias"=>$categorias, "estado"=>$estados]);
     }
     public function store (InventarioFormRequest $request)
     {
+        try {
+            DB::beginTransaction(); 
         $artefacto = new Inventario;
         $artefacto->nombre=$request->get('nombre');
         $artefacto->descripcion=$request->get('descripcion');
         $artefacto->categoria=$request->get('categoria');
         $artefacto->estadof=$request->get('estadof');
-        $artefacto->estado='Disponible';
+        $artefacto->disponible= true;
         $artefacto->save();
-        return Redirect::to('artefacto/artefacto'); //redirecciona a la vista categoria
+        DB::commit();
+        //flash('Welcome Aboard!');
+        $r = 'Artefacto Creado con Exito';
+        }
+
+        catch (\Exception $e) {
+        DB::rollback(); 
+        //Flash::success("No se ha podido crear turno");
+        $r = 'No se ha podido crear Artefacto';
+        }
+
+        return Redirect::to('artefacto/artefacto')->with('notice',$r); //redirecciona a la vista turno
 
     }
     public function show($id)

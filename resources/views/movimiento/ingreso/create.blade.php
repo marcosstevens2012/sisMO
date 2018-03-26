@@ -47,18 +47,19 @@
 				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 					<div class="form-group">
 						<label>Estado entrada</label>
-						<select name="estado" id="estado" class="estado form-control selectpicker" data-live-search="true">
+						<select name="estado" id="estado" class="estado form-control selectpicker" data-live-search="true" required>
+							<option selected="Seleccione Estado">Seleccione Estado</option>
 							@foreach($estado as $est)
-								<option value="{{$est->id}}">{{$est->nombre}}</option>
+							<option value="{{$est->id}}">{{$est->nombre}}</option>
 							@endforeach	
 						</select>
 					</div>
 				</div>
 
-				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+				<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
 					<div class="form-group">
 						<label for="cantidad">Observaciones</label>
-						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones"></textarea> 
+						<textarea id="observaciones" name="observaciones" class="form-control " placeholder="observaciones" style="resize: none"></textarea> 
 					</div>
 				</div>
 
@@ -101,7 +102,7 @@
 					
 		<input type="number" name="idcategoria" id="idcategoria" class hidden="form-control " placeholder="categoria">
 					
-		<input type="num" name="idartefacto" id="idartefacto" style="visibility: hidden;" readonly class="form-control" placeholder="Consultorio">
+		
 			
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
 			<div class="form-group">
@@ -155,7 +156,8 @@
 				var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+')" >X</button></td><td><input type="hidden" name="idartefacto[]" value="'+idartefacto+'">'+artefacto+'</td><td><input type="hidden" name="estado[]" value="'+idestado+'">'+estado+'</td><td><textarea type="hidden" name="pobservaciones[]" value="'+obs+'">'+obs+'</textarea></tr>';
 				cont++;
 				limpiar();
-				
+				console.log(idartefacto);
+				console.log(artefacto);
 				$('#detalles').append(fila);
 			}else{
 				alert("Error al ingresar el detalle del movimiento, revise los datos del artefacto");
@@ -182,12 +184,15 @@
             //console.log("hmm its change");
 
             var iduser=$(this).val();
-            console.log(iduser);
-            
             var div=$(this).parent();
 
-            var op=" ";
-            
+            var select = document.getElementById("artefacto");
+			var length = select.options.length;
+			for (i = 0; i < length; i++) {
+			  select.options[i] = null;
+			}
+			    
+
             $.ajax({
                 type:'get',
                 url:'{!!URL::to('buscarEgreso')!!}',
@@ -196,23 +201,13 @@
                 success:function(data){
                
 
-                    $.each(data, function(key, value) {   
-					     $('#artefacto')
-					         .append($("<option></option>")
-					                    .attr("value", key)
-					                    .text(value.nombre)); 
-					});
-
-               //     op+='<option value="0" selected disabled>Seleccione Artefacto</option>';
-               //     for(var i=0;i<data.length;i++){
-                        
-               ////         op+='<option value="'+data[i].id+'">'+data[i].id+'</option>';
-
-               //    	}
-
-                //   div.find('.artefacto').html(" ");
-                //   div.find('.artefacto').append(op);
-                  
+						$.each(data, function (i, item) {
+						    $('#artefacto').append($('<option>', { 
+						        value: item.id,
+						        text : item.nombre 
+						    }));
+						    console.log(item.id);
+						});          
                 },
                 error:function(){
 

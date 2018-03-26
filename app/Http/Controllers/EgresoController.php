@@ -40,8 +40,9 @@ class EgresoController extends Controller
     public function create(){
         $artefactos=DB::table('artefacto as art')
         ->join('categoria as cat','cat.idcategoria','=','art.categoria') 
-        ->select('art.nombre AS artefacto','art.id','cat.idcategoria as categoria','cat.nombre as ncategoria','art.estadof')
-        ->where('art.estado','=','Disponible')
+        ->join('estado as est','est.id','=','art.estadof')
+        ->select('art.nombre AS artefacto','art.id as idartefacto','cat.idcategoria as categoria','cat.nombre as ncategoria','est.id','est.nombre as estadof')
+        ->where('art.disponible','!=','0')
         ->get();
 
         $user=DB::table('users')->get();
@@ -49,26 +50,24 @@ class EgresoController extends Controller
         //dd($artefactos);
         return view("movimiento.egreso.create",["artefactos"=>$artefactos,"user"=>$user]);
     }
-    public function store(egresoFormRequest $request){
+    public function store(EgresoFormRequest $request){
 
-            $egreso = new egreso;
+            $egreso = new Egreso;
             $egreso->observaciones=$request->get('observaciones');
             $egreso->usuario=$request->get('usuario');
             $egreso->estado='Activo';
             $egreso->save();
 
             $idartefactos=$request->get('idartefacto');
-            
             $idcategoria = $request->get('categoria');
 
-        
             //recorre los articulos agregados
-            /*foreach ($idartefactos as $id) {
-                $artefacto = Artefacto::findOrFail($id);
+            foreach ($idartefactos as $id) {
+                $artefacto = Inventario::findOrFail($id);
                 $artefacto->disponible = false;
-                $artefacto->save();
-                dd($artefacto);
-            }*/
+                $artefacto->save();     
+            }
+
 
             $cont = 0;
             
@@ -77,7 +76,6 @@ class EgresoController extends Controller
                 $detalle = new DetalleEgreso();
                 $detalle->egreso_id=$egreso->id;
                 $detalle->artefacto_id=$idartefactos[$cont];
-                
                 $detalle->idcategoria=$idcategoria[$cont];
                 $detalle->save();
                 $cont=$cont+1;

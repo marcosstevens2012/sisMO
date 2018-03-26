@@ -40,11 +40,9 @@
 					<label>Estado Fisico</label>
 						<select name="estadof" id="estadof" class="form-control selectpicker" data-live-search="true">
 							
-						<option value="MUY BUENO">MUY BUENO</option>
-						<option value="BUENO">BUENO</option>
-						<option value="REGULAR">REGULAR</option>
-						<option value="MALO">MALO</option>
-						<option value="MUY MALO">MUY MALO</option>
+							@foreach($estado as $est)
+								<option value="{{$est->id}}">{{$est->nombre}}</option>
+							@endforeach	
 							
 						</select>
 				</div>
